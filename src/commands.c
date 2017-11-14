@@ -34,7 +34,7 @@ static int is_built_in_command(const char* command_name)
 }
 
 void *t_function_server(void* data);
-
+//void path_resolution(int n_commands, struct single_command (*commands)[512]);
 /*
  * Description: Currently this function only handles single built_in commands. You should modify this structure to launch process and offer pipeline functionality.
  */
@@ -47,6 +47,8 @@ int evaluate_command(int n_commands, struct single_command (*commands)[512])
     char buffer[1024];
     	
     assert(com->argc != 0);
+
+   // path_resolution(n_commands, commands);
 
     stat(com->argv[0], &buf);
 	
@@ -99,7 +101,7 @@ int evaluate_command(int n_commands, struct single_command (*commands)[512])
 
       pid = fork();
 	  if(pid == 0){
-      execv(com->argv[0], com->argv);
+          execv(com->argv[0], com->argv);
       }
       else if(pid > 0){
 		  if(background == false){
@@ -178,3 +180,43 @@ void *t_function_server(void *data) {
 		close(client_sock);
 	}
 }
+
+/*void path_resolution(int n_commands, struct single_command (*commands)[512]){
+	char *abs_path[5] = {"/usr/local/bin/", "/usr/bin/", "/bin/", "/usr/sbin/", "/sbin/"};
+	char *tmp;
+
+	for(int i =0; i < n_commands; i++){
+	    if(commands[i]->argv[0][0] != '/'){
+		if(!strcmp(commands[i]->argv[0], "ls")){
+		    tmp = (char *)realloc(tmp, sizeof(commands[i]->argv[0])+sizeof(abs_path[2]));
+		    strcpy(tmp, abs_path[2]);
+		    strcat(tmp, commands[i]->argv[0]);
+		    commands[i]->argv[0] = (char *)realloc(commands[i]->argv[0], sizeof(tmp));
+		    strcpy(commands[i]->argv[0], tmp);
+		}
+		if(!strcmp(commands[i]->argv[0], "cat")){
+		    tmp = (char *)realloc(tmp, sizeof(commands[i]->argv[0])+sizeof(abs_path[2]));
+		    strcpy(tmp, abs_path[2]);
+		    strcat(tmp, commands[i]->argv[0]);
+		    commands[i]->argv[0] = (char *)realloc(commands[i]->argv[0], sizeof(tmp));
+		    strcpy(commands[i]->argv[0], tmp);
+		}
+		if(!strcmp(commands[i]->argv[0], "vim")){
+		    tmp = (char *)realloc(tmp, sizeof(commands[i]->argv[0])+sizeof(abs_path[1]));
+		    strcpy(tmp, abs_path[1]);
+		    strcat(tmp, commands[i]->argv[0]);
+		    commands[i]->argv[0] = (char *)realloc(commands[i]->argv[0], sizeof(tmp));
+		    strcpy(commands[i]->argv[0], tmp);
+		}
+		if(!strcmp(commands[i]->argv[0], "grep")){
+		    tmp = (char *)realloc(tmp, sizeof(commands[i]->argv[0])+sizeof(abs_path[2]));
+		    strcpy(tmp, abs_path[2]);
+		    strcat(tmp, commands[i]->argv[0]);
+		    commands[i]->argv[0] = (char *)realloc(commands[i]->argv[0], sizeof(tmp));
+		    strcpy(commands[i]->argv[0], tmp);
+		} 
+	    }
+	}
+	
+
+}*/
